@@ -219,17 +219,19 @@ module Guides
         index << view.content_tag(:li, link.html_safe + children_ul.html_safe)
       end
 
-      index_section = <<-INDEX
-      <div id="subCol">
-        <h3 class="chapter"><img src="images/chapters_icon.gif" alt="" />Chapters</h3>
-        <ol class="chapters">
-          #{index}
-        </ol>
-      </div>
-      INDEX
-
-      view.content_for(:index_items) { index.html_safe }
-      view.content_for(:index_section) { index_section.html_safe }
+      if index != ""
+        index_section = <<-INDEX
+        <div id="subCol">
+          <h3 class="chapter"><img src="images/chapters_icon.gif" alt="" />Chapters</h3>
+          <ol class="chapters">
+            #{index}
+          </ol>
+        </div>
+        INDEX
+        
+        view.content_for(:index_section) { index_section.html_safe }
+        view.content_for(:index_items) { index.html_safe }
+      end
 
       i.result
     end
