@@ -167,11 +167,7 @@ module Guides
 
     def set_header_section(body, view, processor)
       new_body = body.sub(/(.*?)endprologue\./m, '').strip
-      header = $1
-
-      unless header
-        raise FormatError, "A prologue is required. Use 'endprologue.' to separate the prologue from the main body."
-      end
+      header = $1 || new_body
 
       if processor == :markdown
         if header =~ /^(.+)\r?\n-+$/ || header =~ /^## (.+)$/
