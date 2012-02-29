@@ -167,26 +167,30 @@ module Guides
 
     def set_header_section(body, view, processor)
       new_body = body.sub(/(.*?)endprologue\./m, '').strip
-      header = $1 || new_body
-
+      header = $1
+      
       if processor == :markdown
-        if header =~ /^(.+)\r?\n-+$/ || header =~ /^## (.+)$/
-          page_title = "#{@meta["title"]}: #{$1.strip}"
+        if (header || new_body) =~ /^(.+)\r?\n-+$/ || (header || new_body) =~ /^## (.+)$/
+          page_title = ": #{$1.strip}"
         else
           raise FormatError, "A title is required. Underline the title with '------' or prefix it with '##'"
         end
       else
-        if header =~ /h2\.(.*)/
-          page_title = "#{@meta["title"]}: #{$1.strip}"
+        if (header || new_body) =~ /h2\.(.*)/
+          page_title = ": #{$1.strip}"
         else
           raise FormatError, "A title is required. Use the 'h2.' declaration to denote the title."
         end
       end
-
-      header = (processor == :markdown) ? markdown(header) : textile(header)
-
+      
       view.content_for(:page_title) { page_title.html_safe }
-      view.content_for(:header_section) { header.html_safe }
+      
+      
+      if header
+        header = (processor == :markdown) ? markdown(header) : textile(header)
+        view.content_for(:header_section) { header.html_safe } 
+      end
+
       new_body
     end
 
